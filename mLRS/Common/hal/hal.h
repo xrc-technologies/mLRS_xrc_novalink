@@ -179,6 +179,15 @@ extern "C" { void delay_ms(uint16_t ms); }
 #include "stm32/tx-hal-E77-MBLKit-wle5cc.h"
 #endif
 
+//-- XRC Technologies NOVALINK 433MHz
+
+#ifdef RX_XRC_NOVALINK_G431CB
+#include "stm32/rx-hal-XRC-NOVALINK-G431cb.h"
+#endif
+
+#ifdef TX_XRC_NOVALINK_G431CB
+#include "stm32/tx-hal-XRC-NOVALINK-G431cb.h"
+#endif
 
 //-- DIY Boards, 2.4 GHz Devices
 

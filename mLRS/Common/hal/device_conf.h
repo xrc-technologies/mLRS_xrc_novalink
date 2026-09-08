@@ -191,6 +191,24 @@ The default selection of frequency bands can be overruled by feature defines.
   //#define FREQUENCY_BAND_70_CM_HAM
 #endif
 
+//-- XRC Technologies NOVALINK 433MHz
+
+#ifdef RX_XRC_NOVALINK_G431CB
+  #define DEVICE_NAME "XRC Tech NOVALINK 433MHz RX"
+  #define DEVICE_IS_RECEIVER
+  #define DEVICE_HAS_SX127x
+  #define FREQUENCY_BAND_433_MHZ
+  #define FREQUENCY_BAND_70_CM_HAM
+#endif
+
+#ifdef TX_XRC_NOVALINK_G431CB
+  #define DEVICE_NAME "XRC Tech NOVALINK 433MHz TX"
+  #define DEVICE_IS_TRANSMITTER
+  #define DEVICE_HAS_SX127x
+  #define FREQUENCY_BAND_433_MHZ
+  #define FREQUENCY_BAND_70_CM_HAM
+#endif
+
 
 //-- DIY Boards, 2.4 GHz Devices
 
