@@ -41,10 +41,10 @@ The default selection of frequency bands can be overruled by feature defines.
 #endif
 
 #ifdef TX_MATEK_MR24_30_G431KB
-  #define DEVICE_NAME "Matek mR24-30"
+  #define DEVICE_NAME "XRC Novalink TX"
   #define DEVICE_IS_TRANSMITTER
-  #define DEVICE_HAS_SX128x
-  #define FREQUENCY_BAND_2P4_GHZ
+   #define DEVICE_HAS_SX127x
+  #define FREQUENCY_BAND_433_MHZ
 #endif
 
 #ifdef RX_MATEK_MR900_30_G431KB
@@ -72,18 +72,17 @@ The default selection of frequency bands can be overruled by feature defines.
 #endif
 
 #ifdef RX_MATEK_MR24_30C_G431KB
-  #define DEVICE_NAME "Matek mR24-30C"
+  #define DEVICE_NAME "XRC Novalink RX - CAN"
   #define DEVICE_IS_RECEIVER
-  #define DEVICE_HAS_SX128x
-  #define FREQUENCY_BAND_2P4_GHZ
+   #define DEVICE_HAS_SX127x
+  #define FREQUENCY_BAND_433_MHZ
 #endif
 
 #ifdef RX_MATEK_MR900_30C_G431KB
-  #define DEVICE_NAME "Matek mR900-30C"
+  #define DEVICE_NAME "XRC Novalink RX - CAN"
   #define DEVICE_IS_RECEIVER
-  #define DEVICE_HAS_SX126x
-  #define FREQUENCY_BAND_868_MHZ
-  #define FREQUENCY_BAND_915_MHZ_FCC
+  #define DEVICE_HAS_SX127x
+  #define FREQUENCY_BAND_433_MHZ
 #endif
 
 
@@ -236,19 +235,15 @@ The default selection of frequency bands can be overruled by feature defines.
 #ifdef RX_DIY_E22_G441KB
   #define DEVICE_NAME "DIY E22 G441KB"
   #define DEVICE_IS_RECEIVER
-  #define DEVICE_HAS_SX126x
-  #define FREQUENCY_BAND_868_MHZ
-  #define FREQUENCY_BAND_915_MHZ_FCC
-  //#define FREQUENCY_BAND_866_MHZ_IN
+  #define DEVICE_HAS_SX127x
+  #define FREQUENCY_BAND_433_MHZ
 #endif
 
 #ifdef TX_DIY_E22_G431KB
   #define DEVICE_NAME "DIY E22 G431KB"
   #define DEVICE_IS_TRANSMITTER
-  #define DEVICE_HAS_SX126x
-  #define FREQUENCY_BAND_868_MHZ
-  #define FREQUENCY_BAND_915_MHZ_FCC
-  //#define FREQUENCY_BAND_866_MHZ_IN
+  #define DEVICE_HAS_SX127x
+  #define FREQUENCY_BAND_433_MHZ
 #endif
 
 #ifdef TX_DIY_E22DUAL_MODULE02_G491RE

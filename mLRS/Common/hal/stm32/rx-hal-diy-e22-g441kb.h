@@ -86,21 +86,21 @@ void sx_init_gpio(void)
     gpio_init(SX_RX_EN, IO_MODE_OUTPUT_PP_LOW, IO_SPEED_VERYFAST);
 }
 
-bool sx_busy_read(void)
-{
-    return (gpio_read_activehigh(SX_BUSY)) ? true : false;
-}
+// bool sx_busy_read(void)
+// {
+//     return (gpio_read_activehigh(SX_BUSY)) ? true : false;
+// }
 
 void sx_amp_transmit(void)
 {
-    gpio_low(SX_RX_EN);
-    gpio_high(SX_TX_EN);
+    // gpio_low(SX_RX_EN);
+    // gpio_high(SX_TX_EN);
 }
 
 void sx_amp_receive(void)
 {
-    gpio_low(SX_TX_EN);
-    gpio_high(SX_RX_EN);
+    // gpio_low(SX_TX_EN);
+    // gpio_high(SX_RX_EN);
 }
 
 void sx_dio_init_exti_isroff(void)
@@ -182,7 +182,7 @@ void led_red_toggle(void) { gpio_toggle(LED_RED); }
 
 //-- POWER
 
-#define POWER_PA_NONE_SX126X
+#define POWER_PA_NONE_SX127X
 #include "../hal-power-pa.h"
 
 

@@ -15,9 +15,14 @@
 #define DEVICE_HAS_JRPIN5
 //#define DEVICE_HAS_IN
 #define DEVICE_HAS_IN_ON_JRPIN5_TX
+
+#define DEVICE_HAS_COM_ON_USB
 #define DEVICE_HAS_NO_DEBUG
 
 
+
+#define DEVICE_HAS_ESP_WIFI_BRIDGE_ESP32C3    // board has ESP32-C3 with RESET,GPIO support
+#define DEVICE_HAS_ESP_WIFI_BRIDGE_CONFIGURE  // board has ESPxx which allows configuration
 //-- Timers, Timing, EEPROM, and such stuff
 
 #define DELAY_USE_DWT
@@ -36,21 +41,27 @@
 // UARTE = in port, SBus or whatever
 // UARTF or SWUART = debug port
 
-#define UARTB_USE_UART1_PA9PA10 // serial
+#define UARTD_USE_UART1_PA9PA10 // serial2 or wireless bridge
+#define UARTD_BAUD                115200
+#define UARTD_USE_TX
+#define UARTD_TXBUFSIZE           TX_SERIAL_TXBUFSIZE
+#define UARTD_USE_TX_ISR
+#define UARTD_USE_RX
+#define UARTD_RXBUFSIZE           TX_SERIAL_RXBUFSIZE
+/* #define UARTC_USE_LPUART1_PA2PA3 // com
+#define UARTC_BAUD                TX_COM_BAUDRATE
+#define UARTC_USE_TX
+#define UARTC_TXBUFSIZE           TX_COM_TXBUFSIZE
+#define UARTC_USE_TX_ISR
+#define UARTC_USE_RX
+#define UARTC_RXBUFSIZE           TX_COM_RXBUFSIZE */
+#define UARTB_USE_LPUART1_PA2PA3 // serial
 #define UARTB_BAUD                TX_SERIAL_BAUDRATE
 #define UARTB_USE_TX
 #define UARTB_TXBUFSIZE           TX_SERIAL_TXBUFSIZE
 #define UARTB_USE_TX_ISR
 #define UARTB_USE_RX
 #define UARTB_RXBUFSIZE           TX_SERIAL_RXBUFSIZE
-
-#define UARTC_USE_LPUART1_PA2PA3 // com
-#define UARTC_BAUD                TX_COM_BAUDRATE
-#define UARTC_USE_TX
-#define UARTC_TXBUFSIZE           TX_COM_TXBUFSIZE_LARGE // TX_COM_TXBUFSIZE
-#define UARTC_USE_TX_ISR
-#define UARTC_USE_RX
-#define UARTC_RXBUFSIZE           TX_COM_RXBUFSIZE
 
 #define UART_USE_UART2_PB3PB4 // JR pin5, MBridge
 #define UART_BAUD                 400000
@@ -73,6 +84,13 @@
 #define UARTE_RXBUFSIZE           512
 #define UARTE_USE_RX_IO           IO_PA15 // normally would be PB4!!
 
+#define UARTF_USE_LPUART1_PA2PA3 // debug
+#define UARTF_BAUD                115200
+#define UARTF_USE_TX
+#define UARTF_TXBUFSIZE           512
+#define UARTF_USE_TX_ISR
+//#define UARTF_USE_RX
+//#define UARTF_RXBUFSIZE           512
 
 //-- SX12xx & SPI
 
@@ -83,9 +101,9 @@
 
 #define SX_RESET                  IO_PB6
 #define SX_DIO                    IO_PB4
-#define SX_BUSY                   IO_PB5
-#define SX_RX_EN                  IO_PB0
-#define SX_TX_EN                  IO_PB7
+// #define SX_BUSY                   IO_PB5
+// #define SX_RX_EN                  IO_PB0
+// #define SX_TX_EN                  IO_PB7
 
 #define SX_DIO_EXTI               EXTI_IO_PB4
 #define SX_DIO_EXTI_IRQn          EXTI4_IRQn
@@ -96,26 +114,26 @@ void sx_init_gpio(void)
 {
     gpio_init(SX_RESET, IO_MODE_OUTPUT_PP_HIGH, IO_SPEED_VERYFAST);
     gpio_init(SX_DIO, IO_MODE_INPUT_PD, IO_SPEED_VERYFAST);
-    gpio_init(SX_BUSY, IO_MODE_INPUT_PU, IO_SPEED_VERYFAST);
-    gpio_init(SX_TX_EN, IO_MODE_OUTPUT_PP_LOW, IO_SPEED_VERYFAST);
-    gpio_init(SX_RX_EN, IO_MODE_OUTPUT_PP_LOW, IO_SPEED_VERYFAST);
+    // gpio_init(SX_BUSY, IO_MODE_INPUT_PU, IO_SPEED_VERYFAST);
+    // gpio_init(SX_TX_EN, IO_MODE_OUTPUT_PP_LOW, IO_SPEED_VERYFAST);
+    // gpio_init(SX_RX_EN, IO_MODE_OUTPUT_PP_LOW, IO_SPEED_VERYFAST);
 }
 
-bool sx_busy_read(void)
-{
-    return (gpio_read_activehigh(SX_BUSY)) ? true : false;
-}
+// bool sx_busy_read(void)
+// {
+//     return (gpio_read_activehigh(SX_BUSY)) ? true : false;
+// }
 
 void sx_amp_transmit(void)
 {
-    gpio_low(SX_RX_EN);
-    gpio_high(SX_TX_EN);
+    // gpio_low(SX_RX_EN);
+    // gpio_high(SX_TX_EN);
 }
 
 void sx_amp_receive(void)
 {
-    gpio_low(SX_TX_EN);
-    gpio_high(SX_RX_EN);
+    // gpio_low(SX_TX_EN);
+    // gpio_high(SX_RX_EN);
 }
 
 void sx_dio_init_exti_isroff(void)
@@ -168,7 +186,7 @@ void in_set_inverted(void)
 
 //-- Button
 
-#define BUTTON                    IO_PA11
+#define BUTTON                    IO_PB0
 
 void button_init(void)
 {
@@ -208,19 +226,34 @@ void led_red_toggle(void) { gpio_toggle(LED_RED); }
 //-- Buzzer
 // Buzzer is active high // TODO: needs pin and AF check! do not use
 
-#define BUZZER                    IO_PB9XXX
-#define BUZZER_IO_AF              IO_AF_12
-#define BUZZER_TIMx               TIM1
-#define BUZZER_IRQn               TIM1_UP_IRQn
-#define BUZZER_IRQHandler         TIM1_UP_IRQHandler
-#define BUZZER_TIM_CHANNEL        LL_TIM_CHANNEL_CH3N
+// #define BUZZER                    IO_PB9XXX
+// #define BUZZER_IO_AF              IO_AF_12
+// #define BUZZER_TIMx               TIM1
+// #define BUZZER_IRQn               TIM1_UP_IRQn
+// #define BUZZER_IRQHandler         TIM1_UP_IRQHandler
+// #define BUZZER_TIM_CHANNEL        LL_TIM_CHANNEL_CH3N
 //#define BUZZER_TIM_IRQ_PRIORITY   14
 
 
+
+#define ESP_GPIO0               IO_PA8 // boot0/IO9 on C3
+#define ESP_RESET               IO_PB5
+
+
+
+#ifdef DEVICE_HAS_ESP_WIFI_BRIDGE_ESP32C3
+void esp_init(void)
+{
+    gpio_init(ESP_GPIO0, IO_MODE_OUTPUT_PP_HIGH, IO_SPEED_DEFAULT); // low -> esp will start in bootloader mode
+    gpio_init(ESP_RESET, IO_MODE_OUTPUT_PP_LOW, IO_SPEED_DEFAULT); // low -> esp is in reset
+
+}
+#endif 
 //-- POWER
 
-#define POWER_PA_NONE_SX126X
+#define POWER_PA_NONE_SX127X
 #include "../hal-power-pa.h"
+// DEVICE_HAS_ESP_WIFI_BRIDGE_ESP32C3
 
 
 //-- TEST
@@ -236,4 +269,5 @@ uint32_t portb[] = {
 
 uint32_t portc[] = {
 };
+
 
