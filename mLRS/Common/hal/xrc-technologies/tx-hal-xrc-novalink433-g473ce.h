@@ -98,8 +98,8 @@ SWC      PA14     SWDCLK                         SWCLK-JTCK, LPTIM1_OUT, I2C4_SM
 #define SPI_USE_CLOCKSPEED_9MHZ
 
 #define SX_RESET                  IO_PB6
-#define SX_DIO0                   IO_PA15
-#define SX_DIO1                   IO_PB7
+#define SX_DIO                   IO_PA15
+#define SX_BUSY                   IO_PC4
 
 
 #define SX_DIO_SYSCFG_EXTI_PORTx      LL_SYSCFG_EXTI_PORTA
@@ -108,18 +108,27 @@ SWC      PA14     SWDCLK                         SWCLK-JTCK, LPTIM1_OUT, I2C4_SM
 #define SX_DIO_EXTI_IRQn              EXTI15_10_IRQn
 #define SX_DIO_EXTI_IRQHandler        EXTI15_10_IRQHandler
 
+#define SX_USE_IRQ_DIO_NO             LR20XX_DIO_7
+
+
 // TODO for FSK
-#define SX_DIO1_SYSCFG_EXTI_PORTx     LL_SYSCFG_EXTI_PORTB
-#define SX_DIO1_SYSCFG_EXTI_LINEx     LL_SYSCFG_EXTI_LINE7
-#define SX_DIO1_EXTI_LINE_x           LL_EXTI_LINE_7
-#define SX_DIO1_EXTI_IRQn             EXTI9_5_IRQn
-#define SX_DIO1_EXTI_IRQHandler       EXTI9_5_IRQHandler
+// #define SX_DIO1_SYSCFG_EXTI_PORTx     LL_SYSCFG_EXTI_PORTB
+// #define SX_DIO1_SYSCFG_EXTI_LINEx     LL_SYSCFG_EXTI_LINE7
+// #define SX_DIO1_EXTI_LINE_x           LL_EXTI_LINE_7
+// #define SX_DIO1_EXTI_IRQn             EXTI9_5_IRQn
+// #define SX_DIO1_EXTI_IRQHandler       EXTI9_5_IRQHandler
 
 void sx_init_gpio(void)
 {
     gpio_init(SX_RESET, IO_MODE_OUTPUT_PP_HIGH, IO_SPEED_VERYFAST);
-    gpio_init(SX_DIO0, IO_MODE_INPUT_PD, IO_SPEED_VERYFAST);
-    gpio_init(SX_DIO1, IO_MODE_INPUT_PD, IO_SPEED_VERYFAST);
+    gpio_init(SX_DIO, IO_MODE_INPUT_PD, IO_SPEED_VERYFAST);
+    gpio_init(SX_BUSY, IO_MODE_INPUT_PU, IO_SPEED_VERYFAST);
+    //gpio_init(SX_DIO1, IO_MODE_INPUT_PD, IO_SPEED_VERYFAST);
+}
+
+bool sx_busy_read(void)
+{
+    return (gpio_read_activehigh(SX_BUSY)) ? true : false;
 }
 
 void sx_amp_transmit(void)
@@ -132,6 +141,10 @@ void sx_amp_receive(void)
 
 }
 
+void sx_band(bool high_band)
+{
+}
+
 void sx_dio_init_exti_isroff(void)
 {
     LL_SYSCFG_SetEXTISource(SX_DIO_SYSCFG_EXTI_PORTx, SX_DIO_SYSCFG_EXTI_LINEx);
@@ -139,7 +152,7 @@ void sx_dio_init_exti_isroff(void)
     // let's not use LL_EXTI_Init(), but let's do it by hand, is easier to allow enabling isr later
     LL_EXTI_DisableEvent_0_31(SX_DIO_EXTI_LINE_x);
     LL_EXTI_DisableIT_0_31(SX_DIO_EXTI_LINE_x);
-    LL_EXTI_DisableFallingTrig_0_31(SX_DIO_EXTI_LINE_x);
+    LL_EXTI_DisableFallingTrig_0_31(SX_DIO_EXTI_LINE_x);    
     LL_EXTI_EnableRisingTrig_0_31(SX_DIO_EXTI_LINE_x);
 
     NVIC_SetPriority(SX_DIO_EXTI_IRQn, SX_DIO_EXTI_IRQ_PRIORITY);
@@ -241,19 +254,22 @@ void esp_gpio0_low(void)  { gpio_low(ESP_GPIO0); }
 
 //-- POWER
 
-#define POWER_PA_DEFINED
+//#define POWER_PA_NONE_LR20XX
+//#include "../hal-power-pa.h"
 
-#define POWER_GAIN_DBM            0 // gain of a PA stage if present
-#define POWER_SX1276_MAX          SX1276_OUTPUT_POWER_MAX // maximum allowed sx power
+#define POWER_GAIN_DBM_HF         0 // gain of a PA stage if present
+#define POWER_GAIN_DBM_LF         0
 #define POWER_USE_DEFAULT_RFPOWER_CALC
 
-#define RFPOWER_DEFAULT           3 // index into rfpower_list array
+#define RFPOWER_DEFAULT           2 // index into rfpower_list array
 
 const rfpower_t rfpower_list[] = {
-    { .dbm = POWER_0_DBM, .mW = 100 },
-    { .dbm = POWER_10_DBM, .mW = 250 },
-    { .dbm = POWER_14_DBM, .mW = 500 },
-    { .dbm = POWER_17_DBM, .mW = 1000 },
+    { .dbm = POWER_MIN, .mW = INT8_MIN },
+    { .dbm = POWER_0_DBM, .mW = 1 },
+    { .dbm = POWER_10_DBM, .mW = 10 },
+    { .dbm = POWER_14_DBM, .mW = 25 },
+    { .dbm = POWER_20_DBM, .mW = 100 },
+    { .dbm = POWER_22_DBM, .mW = 158 },
 };
 
 //-- TEST
@@ -272,4 +288,5 @@ uint32_t portb[] = {
 };
 
 uint32_t portc[] = {
+    LL_GPIO_PIN_4
 };
