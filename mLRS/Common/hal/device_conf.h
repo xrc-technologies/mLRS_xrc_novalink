@@ -91,19 +91,19 @@ The default selection of frequency bands can be overruled by feature defines.
 #ifdef TX_XRC_NOVALINK433_G473CE
   #define DEVICE_NAME "XRC LR2021 TX"
   #define DEVICE_IS_TRANSMITTER
-  #define DEVICE_HAS_LR20xx
+  #define DEVICE_HAS_SX126x
   #define FREQUENCY_BAND_433_MHZ
   #define FREQUENCY_BAND_70_CM_HAM
-  #define FREQUENCY_BAND_2P4_GHZ
+  //#define FREQUENCY_BAND_2P4_GHZ
 #endif
 
 #ifdef RX_XRC_NOVALINK433_G473CE
   #define DEVICE_NAME "XRC LR2021 RX"
   #define DEVICE_IS_RECEIVER
-  #define DEVICE_HAS_LR20xx
+  #define DEVICE_HAS_SX126x
   #define FREQUENCY_BAND_433_MHZ
   #define FREQUENCY_BAND_70_CM_HAM
-  #define FREQUENCY_BAND_2P4_GHZ
+ // #define FREQUENCY_BAND_2P4_GHZ
 #endif
 
 //-- FrsKy R9 system

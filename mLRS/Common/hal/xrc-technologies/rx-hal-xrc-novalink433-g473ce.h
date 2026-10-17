@@ -86,25 +86,27 @@ SWC      PA14     SWDCLK       SWCLK-JTCK, LPTIM1_OUT, I2C4_SMBA, I2C1_SDA, TIM8
 #define SPI_USE_CLOCKSPEED_9MHZ
 
 #define SX_RESET                  IO_PB6
-#define SX_DIO                   IO_PA15
-#define SX_BUSY                   IO_PC4
+//#define SX_DIO0                   IO_PA15
+#define SX_DIO1                   IO_PB7
 
-#define SX_DIO_SYSCFG_EXTI_PORTx      LL_SYSCFG_EXTI_PORTA
-#define SX_DIO_SYSCFG_EXTI_LINEx      LL_SYSCFG_EXTI_LINE15
-#define SX_DIO_EXTI_LINE_x            LL_EXTI_LINE_15
-#define SX_DIO_EXTI_IRQn              EXTI15_10_IRQn
-#define SX_DIO_EXTI_IRQHandler        EXTI15_10_IRQHandler
+#define SX_BUSY                   IO_PA15
 
-#define SX_USE_IRQ_DIO_NO             LR20XX_DIO_9
+#define SX_DIO_SYSCFG_EXTI_PORTx      LL_SYSCFG_EXTI_PORTB
+#define SX_DIO_SYSCFG_EXTI_LINEx      LL_SYSCFG_EXTI_LINE7
+#define SX_DIO_EXTI_LINE_x            LL_EXTI_LINE_7
+#define SX_DIO_EXTI_IRQn              EXTI9_5_IRQn
+#define SX_DIO_EXTI_IRQHandler        EXTI9_5_IRQHandler
 
-// Additional LR20211 defines from RP branch
-#define SX_USE_TCXO_VOLTAGE       LR20XX_TCXO_SUPPLY_VOLTAGE_3_3
-#define SX_USE_RFSW_DIO_CONFIG  {\
-    { LR20XX_DIO_5, LR20XX_DIO_RF_SWITCH_CONFIG_RX_HF }, \
-    { LR20XX_DIO_6, LR20XX_DIO_RF_SWITCH_CONFIG_TX_LF }, \
-    { LR20XX_DIO_7, LR20XX_DIO_RF_SWITCH_CONFIG_RX_HF | LR20XX_DIO_RF_SWITCH_CONFIG_TX_HF }, \
-    { LR20XX_DIO_8, LR20XX_DIO_RF_SWITCH_CONFIG_TX_HF } }
-IRQHANDLER(void SX_DIO_EXTI_IRQHandler(void);)
+//#define SX_USE_IRQ_DIO_NO             LR20XX_DIO_9
+//
+//// Additional LR20211 defines from RP branch
+//#define SX_USE_TCXO_VOLTAGE       LR20XX_TCXO_SUPPLY_VOLTAGE_3_3
+//#define SX_USE_RFSW_DIO_CONFIG  {\
+//    { LR20XX_DIO_5, LR20XX_DIO_RF_SWITCH_CONFIG_RX_HF }, \
+//    { LR20XX_DIO_6, LR20XX_DIO_RF_SWITCH_CONFIG_TX_LF }, \
+//    { LR20XX_DIO_7, LR20XX_DIO_RF_SWITCH_CONFIG_RX_HF | LR20XX_DIO_RF_SWITCH_CONFIG_TX_HF }, \
+//    { LR20XX_DIO_8, LR20XX_DIO_RF_SWITCH_CONFIG_TX_HF } }
+//IRQHANDLER(void SX_DIO_EXTI_IRQHandler(void);)
 
 
 // TODO for FSK
@@ -117,7 +119,7 @@ IRQHANDLER(void SX_DIO_EXTI_IRQHandler(void);)
 void sx_init_gpio(void)
 {
     gpio_init(SX_RESET, IO_MODE_OUTPUT_PP_HIGH, IO_SPEED_VERYFAST);
-    gpio_init(SX_DIO, IO_MODE_INPUT_PD, IO_SPEED_VERYFAST);
+    gpio_init(SX_DIO1, IO_MODE_INPUT_PD, IO_SPEED_VERYFAST);
     gpio_init(SX_BUSY, IO_MODE_INPUT_PU, IO_SPEED_VERYFAST);
     //gpio_init(SX_DIO1, IO_MODE_INPUT_PD, IO_SPEED_VERYFAST);
 
@@ -226,24 +228,8 @@ void out_set_inverted(void)
 
 //-- POWER
 
-//#define POWER_PA_NONE_LR20XX
-//#include "../hal-power-pa.h"
-
-#define POWER_GAIN_DBM_HF         0 // gain of a PA stage if present
-#define POWER_GAIN_DBM_LF         0
-#define POWER_USE_DEFAULT_RFPOWER_CALC
-
-#define RFPOWER_DEFAULT           2 // index into rfpower_list array
-
-const rfpower_t rfpower_list[] = {
-    { .dbm = POWER_MIN, .mW = INT8_MIN },
-    { .dbm = POWER_0_DBM, .mW = 1 },
-    { .dbm = POWER_10_DBM, .mW = 10 },
-    { .dbm = POWER_14_DBM, .mW = 25 },
-    { .dbm = POWER_20_DBM, .mW = 100 },
-    { .dbm = POWER_22_DBM, .mW = 158 },
-};
-
+#define POWER_PA_NONE_SX126X
+#include "../hal-power-pa.h"
 //-- TEST
 
 uint32_t porta[] = {
