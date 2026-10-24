@@ -86,14 +86,17 @@ SWC      PA14     SWDCLK       SWCLK-JTCK, LPTIM1_OUT, I2C4_SMBA, I2C1_SDA, TIM8
 #define SPI_USE_CLOCKSPEED_9MHZ
 
 #define SX_RESET                  IO_PB6
-#define SX_DIO                   IO_PA15
+// #define SX_DIO                   IO_PA15
+#define SX_DIO                   IO_PB7
+
 #define SX_BUSY                   IO_PC4
 
-#define SX_DIO_SYSCFG_EXTI_PORTx      LL_SYSCFG_EXTI_PORTA
-#define SX_DIO_SYSCFG_EXTI_LINEx      LL_SYSCFG_EXTI_LINE15
-#define SX_DIO_EXTI_LINE_x            LL_EXTI_LINE_15
-#define SX_DIO_EXTI_IRQn              EXTI15_10_IRQn
-#define SX_DIO_EXTI_IRQHandler        EXTI15_10_IRQHandler
+
+#define SX_DIO_SYSCFG_EXTI_PORTx      LL_SYSCFG_EXTI_PORTB
+#define SX_DIO_SYSCFG_EXTI_LINEx      LL_SYSCFG_EXTI_LINE7
+#define SX_DIO_EXTI_LINE_x            LL_EXTI_LINE_7
+#define SX_DIO_EXTI_IRQn            EXTI9_5_IRQn
+#define SX_DIO_EXTI_IRQHandler      EXTI9_5_IRQHandler
 
 #define SX_USE_IRQ_DIO_NO             LR20XX_DIO_9
 
@@ -120,7 +123,6 @@ void sx_init_gpio(void)
     gpio_init(SX_DIO, IO_MODE_INPUT_PD, IO_SPEED_VERYFAST);
     gpio_init(SX_BUSY, IO_MODE_INPUT_PU, IO_SPEED_VERYFAST);
     //gpio_init(SX_DIO1, IO_MODE_INPUT_PD, IO_SPEED_VERYFAST);
-
 }
 
 bool sx_busy_read(void)
