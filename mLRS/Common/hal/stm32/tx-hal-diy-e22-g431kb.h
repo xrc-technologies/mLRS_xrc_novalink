@@ -82,29 +82,31 @@
 #define SPI_USE_CLOCKSPEED_9MHZ
 
 #define SX_RESET                  IO_PB6
-#define SX_DIO                    IO_PB4
-#define SX_BUSY                   IO_PB5
+#define SX_DIO                    IO_PB5
+// DIO1 -> PB4
+// #define SX_DIO                    IO_PB4
+// #define SX_BUSY                   IO_PB5
 #define SX_RX_EN                  IO_PB0
 #define SX_TX_EN                  IO_PB7
 
-#define SX_DIO_EXTI               EXTI_IO_PB4
-#define SX_DIO_EXTI_IRQn          EXTI4_IRQn
-#define SX_DIO_EXTI_IRQHandler    EXTI4_IRQHandler
+#define SX_DIO_EXTI               EXTI_IO_PB5
+#define SX_DIO_EXTI_IRQn          EXTI9_5_IRQn
+#define SX_DIO_EXTI_IRQHandler    EXTI9_5_IRQHandler
 //#define SX_DIO_EXTI_IRQ_PRIORITY    11
 
 void sx_init_gpio(void)
 {
     gpio_init(SX_RESET, IO_MODE_OUTPUT_PP_HIGH, IO_SPEED_VERYFAST);
     gpio_init(SX_DIO, IO_MODE_INPUT_PD, IO_SPEED_VERYFAST);
-    gpio_init(SX_BUSY, IO_MODE_INPUT_PU, IO_SPEED_VERYFAST);
+    // gpio_init(SX_BUSY, IO_MODE_INPUT_PU, IO_SPEED_VERYFAST);
     gpio_init(SX_TX_EN, IO_MODE_OUTPUT_PP_LOW, IO_SPEED_VERYFAST);
     gpio_init(SX_RX_EN, IO_MODE_OUTPUT_PP_LOW, IO_SPEED_VERYFAST);
 }
 
-bool sx_busy_read(void)
-{
-    return (gpio_read_activehigh(SX_BUSY)) ? true : false;
-}
+// bool sx_busy_read(void)
+// {
+//     return (gpio_read_activehigh(SX_BUSY)) ? true : false;
+// }
 
 void sx_amp_transmit(void)
 {
@@ -219,7 +221,7 @@ void led_red_toggle(void) { gpio_toggle(LED_RED); }
 
 //-- POWER
 
-#define POWER_PA_NONE_SX126X
+#define POWER_PA_NONE_SX127X
 #include "../hal-power-pa.h"
 
 

@@ -234,21 +234,25 @@ The default selection of frequency bands can be overruled by feature defines.
 //-- DIY Boards, 868/915 MHz Devices
 
 #ifdef RX_DIY_E22_G441KB
-  #define DEVICE_NAME "DIY E22 G441KB"
+  #define DEVICE_NAME "E32-400M33S TX"
   #define DEVICE_IS_RECEIVER
-  #define DEVICE_HAS_SX126x
-  #define FREQUENCY_BAND_868_MHZ
-  #define FREQUENCY_BAND_915_MHZ_FCC
+  #define DEVICE_HAS_SX127x
+  // #define FREQUENCY_BAND_868_MHZ
+  // #define FREQUENCY_BAND_915_MHZ_FCC
   //#define FREQUENCY_BAND_866_MHZ_IN
+  #define FREQUENCY_BAND_433_MHZ
+  #define FREQUENCY_BAND_70_CM_HAM
 #endif
 
 #ifdef TX_DIY_E22_G431KB
-  #define DEVICE_NAME "DIY E22 G431KB"
+  #define DEVICE_NAME "E32-400M33S TX"
   #define DEVICE_IS_TRANSMITTER
-  #define DEVICE_HAS_SX126x
-  #define FREQUENCY_BAND_868_MHZ
-  #define FREQUENCY_BAND_915_MHZ_FCC
+  #define DEVICE_HAS_SX127x
+  // #define FREQUENCY_BAND_868_MHZ
+  // #define FREQUENCY_BAND_915_MHZ_FCC
   //#define FREQUENCY_BAND_866_MHZ_IN
+  #define FREQUENCY_BAND_433_MHZ
+  #define FREQUENCY_BAND_70_CM_HAM
 #endif
 
 #ifdef TX_DIY_E22DUAL_MODULE02_G491RE
