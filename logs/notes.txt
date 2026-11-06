@@ -1,0 +1,4 @@
+The DreamLNK DLSX1278-PA was so bad that its performancee is not even worth mentioning. Didnn't get even 100m away at 1W rf output power. Measured about 28.8dBm from it.
+Ebyte E32 400M 33S module was comparable to Nicerf but still not as good.
+And it's a lot more expensive
+So far nicerf module has been best performing module
