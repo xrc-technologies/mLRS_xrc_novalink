@@ -260,6 +260,7 @@ class Lr20xxDriverCommon : public Lr20xxDriverBase
 
         switch (gconfig->FrequencyBand) {
         case SX_FHSS_FREQUENCY_BAND_2P4_GHZ:
+        case SX_FHSS_FREQUENCY_BAND_2P4_GHZ_HAM:
             SetPaConfig2p4Ghz(sx_power);
             break;
         case SX_FHSS_FREQUENCY_BAND_433_MHZ:
@@ -300,7 +301,7 @@ class Lr20xxDriverCommon : public Lr20xxDriverBase
         SetRxTxFallbackMode(LR20XX_RX_TX_FALLBACK_MODE_FS);
         SetDefaultRxTxTimeout(0, 0);
 
-        if (gconfig->FrequencyBand == SX_FHSS_FREQUENCY_BAND_2P4_GHZ) {
+        if (gconfig->FrequencyBand == SX_FHSS_FREQUENCY_BAND_2P4_GHZ || gconfig->FrequencyBand == SX_FHSS_FREQUENCY_BAND_2P4_GHZ_HAM) {
             SetRxPath(LR20XX_RX_PATH_HF, LR20XX_RX_BOOST_4_HF);
         } else {
             SetRxPath(LR20XX_RX_PATH_LF, LR20XX_RX_BOOST_0_LF); // hm, table 3-17 says rx_boost = 7
@@ -320,6 +321,7 @@ class Lr20xxDriverCommon : public Lr20xxDriverBase
         case SX_FHSS_FREQUENCY_BAND_433_MHZ: SetRfFrequency(440000000); break;
         case SX_FHSS_FREQUENCY_BAND_70_CM_HAM: SetRfFrequency(440000000); break;
         case SX_FHSS_FREQUENCY_BAND_2P4_GHZ: SetRfFrequency(2440000000); break;
+        case SX_FHSS_FREQUENCY_BAND_2P4_GHZ_HAM: SetRfFrequency(2425000000); break; // middle of HAM band for calibration
         default:
             while(1){} // protection
         }
@@ -783,7 +785,7 @@ class Lr20xxDriver2 : public Lr20xxDriverCommon
 
     void _set_band(SX_FHSS_FREQUENCY_BAND_ENUM frequency_band) override
     {
-        sx2_band(frequency_band == SX_FHSS_FREQUENCY_BAND_2P4_GHZ);
+        sx2_band(frequency_band == SX_FHSS_FREQUENCY_BAND_2P4_GHZ || frequency_band == SX_FHSS_FREQUENCY_BAND_2P4_GHZ_HAM);
     }
 
     //-- init API functions

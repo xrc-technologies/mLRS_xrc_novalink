@@ -50,11 +50,11 @@ void setup_configure_metadata(void)
 //** multi band
 #elif defined FREQUENCY_BAND_2P4_GHZ && defined FREQUENCY_BAND_915_MHZ_FCC && defined FREQUENCY_BAND_868_MHZ
     // MULTIBAND 2.4 GHz & 868/915 MHz
-    SetupMetaData.FrequencyBand_allowed_mask = 0b00000111; // 2.4 GHz, 915 FCC, 868
+    SetupMetaData.FrequencyBand_allowed_mask = 0b1_0000_0111; // 2.4 GHz, 2.4 GHz HAM, 915 FCC, 868
     #define FREQUENCY_BAND_DEFAULT  SETUP_FREQUENCY_BAND_868_MHZ
 #elif defined FREQUENCY_BAND_2P4_GHZ && defined FREQUENCY_BAND_433_MHZ && defined FREQUENCY_BAND_70_CM_HAM
     // MULTIBAND 2.4 GHz & 433 MHz/70 cm
-    SetupMetaData.FrequencyBand_allowed_mask = 0b00011001; // 2.4 GHz, 433, 70
+    SetupMetaData.FrequencyBand_allowed_mask = 0b1_0001_1001; // 2.4 GHz, 2.4 GHz HAM, 433, 70
     #define FREQUENCY_BAND_DEFAULT  SETUP_FREQUENCY_BAND_433_MHZ
 //** single band, multiple frequencies
 #elif defined FREQUENCY_BAND_915_MHZ_FCC && defined FREQUENCY_BAND_868_MHZ && \
@@ -72,7 +72,7 @@ void setup_configure_metadata(void)
     #define FREQUENCY_BAND_DEFAULT  SETUP_FREQUENCY_BAND_433_MHZ
 //** single band, single frequency
 #elif defined FREQUENCY_BAND_2P4_GHZ
-    SetupMetaData.FrequencyBand_allowed_mask = 0b00000001; // 2.4 GHz, not editable
+    SetupMetaData.FrequencyBand_allowed_mask = 0b1_0000_0001; // 2.4 GHz, 2.4 GHz HAM, not editable
     #define FREQUENCY_BAND_DEFAULT  SETUP_FREQUENCY_BAND_2P4_GHZ
 #elif defined FREQUENCY_BAND_915_MHZ_FCC
     SetupMetaData.FrequencyBand_allowed_mask = 0b00000010; // 915 MHz FCC, not editable
@@ -476,6 +476,7 @@ void _setup_sanitize_config(uint8_t config_id, bool only_rx)
     // allowed Ortho depends on FrequencyBand, so we adjust here!
     switch (Setup.Common[config_id].FrequencyBand) {
     case SETUP_FREQUENCY_BAND_2P4_GHZ: // restrict ortho to 2.4GHz, 915FCC, 70CM
+    case SETUP_FREQUENCY_BAND_2P4_GHZ_HAM:
     case SETUP_FREQUENCY_BAND_915_MHZ_FCC:
     case SETUP_FREQUENCY_BAND_70_CM_HAM:
 //TODO    case SETUP_FREQUENCY_DUAL_BAND_915_MHZ_2P4_GHZ: // for the moment don't be concerned about ortho
@@ -931,7 +932,7 @@ void setup_configure_config(uint8_t config_id)
 
 //TODO: sort out for dual band
     Config.Fhss.Except = EXCEPT_NONE;
-    if (Config.Sx.FrequencyBand == SX_FHSS_FREQUENCY_BAND_2P4_GHZ) {
+    if (Config.Sx.FrequencyBand == SX_FHSS_FREQUENCY_BAND_2P4_GHZ || Config.Sx.FrequencyBand == SX_FHSS_FREQUENCY_BAND_2P4_GHZ_HAM) {
         Config.Fhss.Except = except_from_bindphrase(Setup.Common[config_id].BindPhrase);
     }
 
@@ -958,6 +959,9 @@ void setup_configure_config(uint8_t config_id)
     if (SetupMetaData.FrequencyBand_allowed_mask & (1 << SETUP_FREQUENCY_BAND_866_MHZ_IN)) {
         Config.Fhss.BindScan_mask |= (1 << SX_FHSS_FREQUENCY_BAND_866_MHZ_IN);
     }
+    if (SetupMetaData.FrequencyBand_allowed_mask & (1 << SETUP_FREQUENCY_BAND_2P4_GHZ_HAM)) {
+        Config.Fhss.BindScan_mask |= (1 << SX_FHSS_FREQUENCY_BAND_2P4_GHZ_HAM);
+    }
 
     uint8_t fhss_num_list[SX_FHSS_FREQUENCY_BAND_NUM][MODE_NUM] = {
 // MODE_50HZ,         MODE_31HZ,              MODE_19HZ,                MODE_FLRC_111HZ,   MODE_FSK_50HZ,         MODE_19HZ_7X
@@ -972,7 +976,9 @@ void setup_configure_config(uint8_t config_id)
 // SX_FHSS_FREQUENCY_BAND_433_MHZ
 {  1,                 FHSS_NUM_433_MHZ,       FHSS_NUM_433_MHZ,         1,                 FHSS_NUM_433_MHZ,      FHSS_NUM_433_MHZ},
 // SX_FHSS_FREQUENCY_BAND_70_CM_HAM
-{  1,                 FHSS_NUM_70_CM_HAM,     FHSS_NUM_70_CM_HAM_19HZ,  1,                 FHSS_NUM_70_CM_HAM,    FHSS_NUM_70_CM_HAM_19HZ}
+{  1,                 FHSS_NUM_70_CM_HAM,     FHSS_NUM_70_CM_HAM_19HZ,  1,                 FHSS_NUM_70_CM_HAM,    FHSS_NUM_70_CM_HAM_19HZ},
+// SX_FHSS_FREQUENCY_BAND_2P4_GHZ_HAM
+{  FHSS_NUM_2P4_GHZ_HAM,  FHSS_NUM_2P4_GHZ_HAM_31HZ,  FHSS_NUM_2P4_GHZ_HAM_19HZ,    FHSS_NUM_2P4_GHZ_HAM,  1,                     1}
     };
     Config.Fhss.Num = fhss_num_list[Config.Fhss.FrequencyBand][Config.Mode];
 

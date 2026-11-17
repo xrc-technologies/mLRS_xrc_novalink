@@ -43,6 +43,7 @@
 #endif
 #ifdef FREQUENCY_BAND_2P4_GHZ
   #define FHSS_HAS_CONFIG_2P4_GHZ
+  #define FHSS_HAS_CONFIG_2P4_GHZ_HAM
 #endif
 
 
@@ -315,6 +316,72 @@ const uint8_t fhss_bind_channel_2p4 = 46; // just pick some
 
 #endif
 
+#ifdef FHSS_HAS_CONFIG_2P4_GHZ_HAM
+// 2401.0 ... 2450.0  in 1 MHz steps
+// = 50 channels, all within the 2.4 GHz amateur band (2400-2450 MHz)
+
+const uint32_t fhss_freq_list_2p4_ham[] = {
+
+    SX12XX_FREQ_GHZ_TO_REG(2.401), // channel 0
+    SX12XX_FREQ_GHZ_TO_REG(2.402),
+    SX12XX_FREQ_GHZ_TO_REG(2.403),
+    SX12XX_FREQ_GHZ_TO_REG(2.404),
+    SX12XX_FREQ_GHZ_TO_REG(2.405),
+    SX12XX_FREQ_GHZ_TO_REG(2.406),
+    SX12XX_FREQ_GHZ_TO_REG(2.407),
+    SX12XX_FREQ_GHZ_TO_REG(2.408),
+    SX12XX_FREQ_GHZ_TO_REG(2.409),
+    SX12XX_FREQ_GHZ_TO_REG(2.410),
+
+    SX12XX_FREQ_GHZ_TO_REG(2.411), // channel 10
+    SX12XX_FREQ_GHZ_TO_REG(2.412),
+    SX12XX_FREQ_GHZ_TO_REG(2.413),
+    SX12XX_FREQ_GHZ_TO_REG(2.414),
+    SX12XX_FREQ_GHZ_TO_REG(2.415),
+    SX12XX_FREQ_GHZ_TO_REG(2.416),
+    SX12XX_FREQ_GHZ_TO_REG(2.417),
+    SX12XX_FREQ_GHZ_TO_REG(2.418),
+    SX12XX_FREQ_GHZ_TO_REG(2.419),
+    SX12XX_FREQ_GHZ_TO_REG(2.420),
+
+    SX12XX_FREQ_GHZ_TO_REG(2.421), // channel 20
+    SX12XX_FREQ_GHZ_TO_REG(2.422),
+    SX12XX_FREQ_GHZ_TO_REG(2.423),
+    SX12XX_FREQ_GHZ_TO_REG(2.424),
+    SX12XX_FREQ_GHZ_TO_REG(2.425),
+    SX12XX_FREQ_GHZ_TO_REG(2.426),
+    SX12XX_FREQ_GHZ_TO_REG(2.427),
+    SX12XX_FREQ_GHZ_TO_REG(2.428),
+    SX12XX_FREQ_GHZ_TO_REG(2.429),
+    SX12XX_FREQ_GHZ_TO_REG(2.430),
+
+    SX12XX_FREQ_GHZ_TO_REG(2.431), // channel 30
+    SX12XX_FREQ_GHZ_TO_REG(2.432),
+    SX12XX_FREQ_GHZ_TO_REG(2.433),
+    SX12XX_FREQ_GHZ_TO_REG(2.434),
+    SX12XX_FREQ_GHZ_TO_REG(2.435),
+    SX12XX_FREQ_GHZ_TO_REG(2.436),
+    SX12XX_FREQ_GHZ_TO_REG(2.437),
+    SX12XX_FREQ_GHZ_TO_REG(2.438),
+    SX12XX_FREQ_GHZ_TO_REG(2.439),
+    SX12XX_FREQ_GHZ_TO_REG(2.440),
+
+    SX12XX_FREQ_GHZ_TO_REG(2.441), // channel 40
+    SX12XX_FREQ_GHZ_TO_REG(2.442),
+    SX12XX_FREQ_GHZ_TO_REG(2.443),
+    SX12XX_FREQ_GHZ_TO_REG(2.444),
+    SX12XX_FREQ_GHZ_TO_REG(2.445),
+    SX12XX_FREQ_GHZ_TO_REG(2.446),
+    SX12XX_FREQ_GHZ_TO_REG(2.447),
+    SX12XX_FREQ_GHZ_TO_REG(2.448),
+    SX12XX_FREQ_GHZ_TO_REG(2.449),
+    SX12XX_FREQ_GHZ_TO_REG(2.450), // channel 49
+};
+
+const uint8_t fhss_bind_channel_2p4_ham = 24; // middle of HAM band (2425 MHz)
+
+#endif
+
 
 //-------------------------------------------------------
 // FHSS Class
@@ -387,6 +454,15 @@ const tFhssConfig fhss_config[] = {
 #else
     { .freq_list = nullptr },
 #endif
+#ifdef FHSS_HAS_CONFIG_2P4_GHZ_HAM
+    {
+        .freq_list = fhss_freq_list_2p4_ham,
+        .freq_list_len = (uint8_t)(sizeof(fhss_freq_list_2p4_ham) / sizeof(uint32_t)),
+        .bind_channel = fhss_bind_channel_2p4_ham,
+    },
+#else
+    { .freq_list = nullptr },
+#endif
 };
 
 
@@ -446,6 +522,17 @@ class tFhssBase
             } else {
                 ortho = ORTHO_NONE;
                 if (except > EXCEPT_2P4_GHZ_WIFIBAND_13) except = EXCEPT_NONE;
+            }
+            generate_ortho_except(seed, ortho, except);
+            break;
+        case SX_FHSS_FREQUENCY_BAND_2P4_GHZ_HAM:
+            // 50 channels in HAM band (2401-2450 MHz), all within amateur band
+            if (ortho >= ORTHO_1_3 && ortho <= ORTHO_3_3) {
+                // we can accommodate up to 16 frequencies (16 * 3 = 48 < 50)
+                if (cnt > 16) cnt = 16;
+                except = EXCEPT_NONE;
+            } else {
+                ortho = ORTHO_NONE;
             }
             generate_ortho_except(seed, ortho, except);
             break;

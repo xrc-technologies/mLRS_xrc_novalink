@@ -137,6 +137,9 @@
 #define FHSS_NUM_2P4_GHZ                24
 #define FHSS_NUM_2P4_GHZ_31HZ           18
 #define FHSS_NUM_2P4_GHZ_19HZ           12 // was 24, but a cycle takes then 1.3 sec! would need long disconnect
+#define FHSS_NUM_2P4_GHZ_HAM            16 // 50 HAM channels, ortho 1/3 gives ~16 (16*3=48<50)
+#define FHSS_NUM_2P4_GHZ_HAM_31HZ       12
+#define FHSS_NUM_2P4_GHZ_HAM_19HZ       8
 
 #define FRAME_TX_RX_LEN                 91 // we currently only support equal len
 

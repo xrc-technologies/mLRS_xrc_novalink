@@ -253,6 +253,7 @@ class Lr11xxDriverCommon : public Lr11xxDriverBase
             case SX_FHSS_FREQUENCY_BAND_433_MHZ: CalibImage(LR11XX_CAL_IMG_430_MHZ_1, LR11XX_CAL_IMG_430_MHZ_2); break;
             case SX_FHSS_FREQUENCY_BAND_70_CM_HAM: CalibImage(LR11XX_CAL_IMG_430_MHZ_1, LR11XX_CAL_IMG_430_MHZ_2); break;
             case SX_FHSS_FREQUENCY_BAND_2P4_GHZ: break;
+            case SX_FHSS_FREQUENCY_BAND_2P4_GHZ_HAM: break;
             default:
                 while(1){} // protection
         }
@@ -267,7 +268,7 @@ class Lr11xxDriverCommon : public Lr11xxDriverBase
             SetGfskConfigurationByIndex(0, gconfig->FskSyncWord);
         }
 
-        if (gconfig->FrequencyBand == SX_FHSS_FREQUENCY_BAND_2P4_GHZ) {
+        if (gconfig->FrequencyBand == SX_FHSS_FREQUENCY_BAND_2P4_GHZ || gconfig->FrequencyBand == SX_FHSS_FREQUENCY_BAND_2P4_GHZ_HAM) {
             SetPaConfig(LR11XX_PA_SELECT_HF_PA, LR11XX_REG_PA_SUPPLY_INTERNAL, 0, 0);
         } else {
 #ifndef SX_USE_LP_PA
